@@ -1,3 +1,3 @@
 export default function* rootSaga() {
-  console.log('Root saga running')
+  console.log("Root saga running");
 }

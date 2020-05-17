@@ -1,3 +1,3 @@
 export default {
-  blue: '#0000FF',
-}
+  blue: "#0000FF",
+};

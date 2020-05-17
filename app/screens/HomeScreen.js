@@ -1,9 +1,8 @@
-import React from 'react';
-import { Button, Text, View } from 'react-native';
+import React from "react";
+import { Button, Text, View } from "react-native";
 
-import HandWash from '../components/HandWash'
-import HomeTiles from '../components/HomeTiles'
-
+import HandWash from "../components/HandWash";
+import HomeTiles from "../components/HomeTiles";
 
 export default class HomeScreen extends React.Component {
   render() {
@@ -13,6 +12,3 @@ export default class HomeScreen extends React.Component {
     );
   }
 }
-
-
-  
