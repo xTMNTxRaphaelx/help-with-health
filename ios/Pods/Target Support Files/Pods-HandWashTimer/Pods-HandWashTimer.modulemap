@@ -1,0 +1,6 @@
+module Pods_HandWashTimer {
+  umbrella header "Pods-HandWashTimer-umbrella.h"
+
+  export *
+  module * { export * }
+}
