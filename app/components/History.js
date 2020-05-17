@@ -7,6 +7,11 @@ import {
   Text,
   AsyncStorage,
 } from "react-native";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => ({
+  test: state.test,
+});
 
 function Item({ title }) {
   return (
@@ -16,7 +21,7 @@ function Item({ title }) {
   );
 }
 
-export default class History extends React.Component {
+class History extends React.Component {
   constructor(props) {
     super(props);
 
@@ -75,3 +80,5 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
 });
+
+export default connect(mapStateToProps)(History);
