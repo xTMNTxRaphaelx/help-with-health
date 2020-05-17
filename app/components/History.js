@@ -5,12 +5,11 @@ import {
   FlatList,
   StyleSheet,
   Text,
-  AsyncStorage,
 } from "react-native";
 import { connect } from "react-redux";
 
-const mapStateToProps = (state) => ({
-  test: state.test,
+const mapStateToProps = (timers) => ({
+  timers,
 });
 
 function Item({ title }) {
@@ -22,43 +21,21 @@ function Item({ title }) {
 }
 
 class History extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      List: [],
-    };
-  }
-
-  async componentDidMount() {
-    console.log("componentDidMount");
-    this.retriveData();
-  }
-
-  retriveData = async () => {
-    console.log("retriveData 1");
-    try {
-      let key = "@###1";
-      let value = JSON.parse(await AsyncStorage.getItem(key));
-      console.log(value);
-      if (value === null) {
-        console.log("Null ");
-      } else {
-        console.log("2 ");
-        this.setState({ List: value });
-        console.log("test8888");
-        console.log(this.state.List);
-      }
-    } catch (error) {}
+  renderItem = ({ item }) => {
+    return <Item title={item} />;
   };
 
   render() {
+    const { timers } = this.props
+    console.log(timers)
     return (
-      <FlatList
-        data={this.state.List}
-        renderItem={({ item }) => <Item title={item.data} />}
-        keyExtractor={(item) => item.id}
-      />
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={timers.filter(timer => !!timer)}
+          renderItem={this.renderItem}
+          keyExtractor={(item, index) => index}
+        />
+      </SafeAreaView>
     );
   }
 }
@@ -66,7 +43,6 @@ class History extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10,
   },
   item: {
     backgroundColor: "#008000",

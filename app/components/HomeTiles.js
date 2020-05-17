@@ -1,54 +1,72 @@
 import React, { Component } from "react";
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   TouchableHighlight,
-  Alert,
 } from "react-native";
-import { Stopwatch, Timer } from "react-native-stopwatch-timer";
+import { connect } from 'react-redux'
+import { Timer } from "react-native-stopwatch-timer";
 
-import { AsyncStorage } from "react-native";
+import { addTimer, getTimers } from "app/state/actions";
 
-export default class HomeTiles extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      timerStart: false,
-      stopwatchStart: false,
-      totalDuration: 5000,
-      timerReset: false,
-      stopwatchReset: false,
-    };
-    this.toggleTimer = this.toggleTimer.bind(this);
-    this.resetTimer = this.resetTimer.bind(this);
-    this.toggleStopwatch = this.toggleStopwatch.bind(this);
-    this.resetStopwatch = this.resetStopwatch.bind(this);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getTimers: () => dispatch(getTimers()),
+    addTimer: (payload) => dispatch(addTimer(payload)),
+  };
+};
+
+class HomeTiles extends Component {
+  state = {
+    timerStart: false,
+    stopwatchStart: false,
+    totalDuration: 5000,
+    timerReset: false,
+    stopwatchReset: false,
+  };
+
+  componentDidMount() {
+    const { getTimers } = this.props
+    getTimers()
   }
 
-  toggleTimer() {
+  toggleTimer = () => {
     this.setState({ timerStart: !this.state.timerStart, timerReset: false });
-  }
+  };
 
-  resetTimer() {
+  resetTimer = () => {
     this.setState({ timerStart: false, timerReset: true });
-  }
+  };
 
-  toggleStopwatch() {
+  toggleStopwatch = () => {
     this.setState({
       stopwatchStart: !this.state.stopwatchStart,
       stopwatchReset: false,
     });
-  }
+  };
 
-  resetStopwatch() {
+  resetStopwatch = () => {
     this.setState({ stopwatchStart: false, stopwatchReset: true });
-  }
+  };
 
-  getFormattedTime(time) {
+  getFormattedTime = (time) => {
     this.currentTime = time;
-  }
+  };
+
+  storeData = () => {
+    const { addTimer } = this.props
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    var hr = new Date().getHours();
+    var min = new Date().getMinutes();
+
+    var finalDateString =
+      hr + ":" + min + " " + date + "-" + month + "-" + year;
+
+    addTimer(finalDateString)
+  };
 
   render() {
     return (
@@ -70,7 +88,7 @@ export default class HomeTiles extends Component {
             start={this.state.timerStart}
             reset={this.state.timerReset}
             options={options}
-            handleFinish={storeData}
+            handleFinish={this.storeData}
             getTime={this.getFormattedTime}
           />
         </View>
@@ -78,51 +96,6 @@ export default class HomeTiles extends Component {
     );
   }
 }
-
-const handleTimerComplete = () => {
-  alert("custom completion function");
-};
-ShowCurrentDate = () => {
-  var date = new Date().getDate();
-  var month = new Date().getMonth() + 1;
-  var year = new Date().getFullYear();
-  var hr = new Date().getHours();
-  var min = new Date().getMinutes();
-
-  var finalDateString = hr + ":" + min + " " + date + "-" + month + "-" + year;
-
-  Alert.alert(finalDateString);
-};
-
-storeData = async () => {
-  var date = new Date().getDate();
-  var month = new Date().getMonth() + 1;
-  var year = new Date().getFullYear();
-  var hr = new Date().getHours();
-  var min = new Date().getMinutes();
-
-  var finalDateString = hr + ":" + min + " " + date + "-" + month + "-" + year;
-
-  let arr = [];
-  id = 0;
-
-  let dummydata = "Neeraj Soni";
-  try {
-    let key = "@###1";
-    let value = JSON.parse(await AsyncStorage.getItem(key));
-    console.log(value);
-    alert(value);
-    if (value === null) {
-      arr.push({ id: id, data: finalDateString });
-
-      await AsyncStorage.setItem(key, JSON.stringify(arr));
-    } else {
-      value.push({ id: id, data: finalDateString });
-      await AsyncStorage.setItem(key, JSON.stringify(value));
-    }
-    this.id++;
-  } catch (error) {}
-};
 
 const options = {
   container: {
@@ -158,3 +131,5 @@ const styles = StyleSheet.create({
     padding: 5,
   },
 });
+
+export default connect(null, mapDispatchToProps)(HomeTiles)
